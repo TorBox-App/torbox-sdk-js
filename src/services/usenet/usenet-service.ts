@@ -15,6 +15,8 @@ import {
 import { _8 } from './models/_8';
 import { GetUsenetCachedAvailabilityParams, GetUsenetListParams, RequestDownloadLink1Params } from './request-params';
 import { GetUsenetListOkResponse, getUsenetListOkResponseResponse } from './models/get-usenet-list-ok-response';
+import { RequestDownloadLinkOkResponse, requestDownloadLinkOkResponseResponse } from './models/request-download-link-response';
+import { GetUsenetCachedAvailabilityOkResponse, getUsenetCachedAvailabilityOkResponseResponse } from './models/get-usenet-cached-availability-response';
 
 export class UsenetService extends BaseService {
   /**
@@ -68,7 +70,6 @@ Requires an API key using the Authorization Bearer Header.
         key: 'api_version',
         value: apiVersion,
       })
-      .addHeaderParam({ key: 'Content-Type', value: 'multipart/form-data' })
       .addBody(body)
       .build();
     return this.client.call<CreateUsenetDownloadOkResponse>(request);
@@ -149,13 +150,13 @@ Requires an API key as a parameter for the `token` parameter.
  * @param {string} [params.userIp] - The user's IP to determine the closest CDN. Optional.
  * @param {string} [params.redirect] - If you want to redirect the user to the CDN link. This is useful for creating permalinks so that you can just make this request URL the link.
  * @param {RequestConfig} requestConfig - (Optional) The request configuration for retry and validation.
- * @returns {Promise<HttpResponse<any>>} 
+ * @returns {Promise<HttpResponse<RequestDownloadLinkOkResponse>>} 
  */
-  async requestDownloadLink1(
+  async requestDownloadLink(
     apiVersion: string,
     params?: RequestDownloadLink1Params,
     requestConfig?: RequestConfig,
-  ): Promise<HttpResponse<void>> {
+  ): Promise<HttpResponse<RequestDownloadLinkOkResponse>> {
     const request = new RequestBuilder()
       .setBaseUrl(requestConfig?.baseUrl || this.config.baseUrl || this.config.environment || Environment.DEFAULT)
       .setConfig(this.config)
@@ -167,6 +168,11 @@ Requires an API key as a parameter for the `token` parameter.
       .addResponse({
         schema: z.undefined(),
         contentType: ContentType.NoContent,
+        status: 307,
+      })
+      .addResponse({
+        schema: requestDownloadLinkOkResponseResponse,
+        contentType: ContentType.Json,
         status: 200,
       })
       .setRetryAttempts(this.config, requestConfig)
@@ -201,7 +207,7 @@ Requires an API key as a parameter for the `token` parameter.
         value: params?.redirect,
       })
       .build();
-    return this.client.call<void>(request);
+    return this.client.call<RequestDownloadLinkOkResponse>(request);
   }
 
   /**
@@ -283,13 +289,13 @@ Requires an API key using the Authorization Bearer Header.
  * @param {string} [params.hash] - The list of usenet hashes you want to check. Comma seperated. To find the hash, md5 the link of the usenet link or file.
  * @param {string} [params.format] - Format you want the data in. Acceptable is either "object" or "list". List is the most performant option as it doesn't require modification of the list.
  * @param {RequestConfig} requestConfig - (Optional) The request configuration for retry and validation.
- * @returns {Promise<HttpResponse<any>>} 
+ * @returns {Promise<HttpResponse<GetUsenetCachedAvailabilityOkResponse>>} 
  */
   async getUsenetCachedAvailability(
     apiVersion: string,
     params?: GetUsenetCachedAvailabilityParams,
     requestConfig?: RequestConfig,
-  ): Promise<HttpResponse<void>> {
+  ): Promise<HttpResponse<GetUsenetCachedAvailabilityOkResponse>> {
     const request = new RequestBuilder()
       .setBaseUrl(requestConfig?.baseUrl || this.config.baseUrl || this.config.environment || Environment.DEFAULT)
       .setConfig(this.config)
@@ -299,8 +305,8 @@ Requires an API key using the Authorization Bearer Header.
       .addAccessTokenAuth(this.config.token, 'Bearer')
       .setRequestContentType(ContentType.Json)
       .addResponse({
-        schema: z.undefined(),
-        contentType: ContentType.NoContent,
+        schema: getUsenetCachedAvailabilityOkResponseResponse,
+        contentType: ContentType.Json,
         status: 200,
       })
       .setRetryAttempts(this.config, requestConfig)
@@ -319,6 +325,6 @@ Requires an API key using the Authorization Bearer Header.
         value: params?.format,
       })
       .build();
-    return this.client.call<void>(request);
+    return this.client.call<GetUsenetCachedAvailabilityOkResponse>(request);
   }
 }

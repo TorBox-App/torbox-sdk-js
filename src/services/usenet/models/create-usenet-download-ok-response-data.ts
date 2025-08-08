@@ -7,7 +7,7 @@ export const createUsenetDownloadOkResponseData = z.lazy(() => {
   return z.object({
     authId: z.string().optional(),
     hash: z.string().optional(),
-    usenetdownloadId: z.string().optional(),
+    usenetdownloadId: z.number().optional(),
   });
 });
 
@@ -29,7 +29,7 @@ export const createUsenetDownloadOkResponseDataResponse = z.lazy(() => {
     .object({
       auth_id: z.string().optional(),
       hash: z.string().optional(),
-      usenetdownload_id: z.string().optional(),
+      usenetdownload_id: z.number().optional(),
     })
     .transform((data) => ({
       authId: data['auth_id'],
@@ -47,7 +47,7 @@ export const createUsenetDownloadOkResponseDataRequest = z.lazy(() => {
     .object({
       authId: z.string().optional(),
       hash: z.string().optional(),
-      usenetdownloadId: z.string().optional(),
+      usenetdownloadId: z.number().optional(),
     })
     .transform((data) => ({
       auth_id: data['authId'],
