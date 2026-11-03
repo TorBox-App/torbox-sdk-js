@@ -1,75 +1,107 @@
 import z, { ZodType } from 'zod';
 import { Request } from './request';
+import { toBase64 as encodeBase64 } from '../utils/runtime';
 import {
   CreateRequestParameters,
   RequestParameter,
   RequestPagination,
+  RequestCursorPagination,
   ResponseDefinition,
   ErrorDefinition,
 } from './types';
-import { ContentType, HttpMethod, SdkConfig, RequestConfig, RetryOptions, ValidationOptions } from '../types';
+import { ContentType, HttpMethod, SdkConfig } from '../types';
 import { Environment } from '../environment';
 import { SerializationStyle } from '../serialization/base-serializer';
 
+/**
+ * Builder pattern implementation for constructing HTTP requests.
+ * Provides a fluent interface for configuring all aspects of an API request.
+ * @template Page - The type for paginated response pages
+ */
 export class RequestBuilder<Page extends unknown[] = unknown[]> {
+  /** Internal request parameters being built */
   private params: CreateRequestParameters<Page>;
 
+  /**
+   * Creates a new request builder with default configuration.
+   * Initializes retry settings, validation options, and empty parameter collections.
+   */
   constructor() {
     this.params = {
       baseUrl: Environment.DEFAULT,
       method: 'GET',
       path: '',
-      config: {},
+      config: {
+        retry: {
+          delayMs: 150,
+          maxDelayMs: 5000,
+          backoffFactor: 2,
+          jitterMs: 50,
+          httpMethodsToRetry: ['GET', 'PUT', 'DELETE', 'HEAD', 'OPTIONS'],
+        },
+        validation: { responseValidation: true, requestValidation: true },
+      } as SdkConfig,
       responses: [],
       errors: [],
       requestSchema: z.any(),
       requestContentType: ContentType.Json,
-      retry: {
-        attempts: 3,
-        delayMs: 150,
-      },
-      validation: {
-        responseValidation: true,
-      },
       pathParams: new Map(),
       queryParams: new Map(),
       headers: new Map(),
+      cookies: new Map(),
     };
+    this.addHeaderParam({
+      key: 'User-Agent',
+      value: 'postman-codegen/3.17.0 main-api-sdk/1.0.0 (typescript)',
+    });
   }
 
-  setRetryAttempts(sdkConfig?: SdkConfig, requestConfig?: RequestConfig): RequestBuilder<Page> {
-    if (requestConfig?.retry?.attempts !== undefined) {
-      this.params.retry.attempts = requestConfig.retry.attempts;
-    } else if (sdkConfig?.retry?.attempts !== undefined) {
-      this.params.retry.attempts = sdkConfig.retry.attempts;
+  setConfig(config: SdkConfig): RequestBuilder<Page> {
+    // Merge user config with default config, preserving defaults for unspecified nested properties
+    let mergedRetry = config.retry ?? this.params.config.retry;
+    if (config.retry !== undefined && this.params.config.retry !== undefined) {
+      mergedRetry = { ...this.params.config.retry, ...config.retry };
     }
 
+    let mergedValidation = config.validation ?? this.params.config.validation;
+    if (config.validation !== undefined && this.params.config.validation !== undefined) {
+      mergedValidation = { ...this.params.config.validation, ...config.validation };
+    }
+
+    this.params.config = {
+      ...this.params.config,
+      ...config,
+      ...(mergedRetry !== undefined && { retry: mergedRetry }),
+      ...(mergedValidation !== undefined && { validation: mergedValidation }),
+    } as SdkConfig;
     return this;
   }
 
-  setRetryDelayMs(sdkConfig?: SdkConfig, requestConfig?: RequestConfig): RequestBuilder<Page> {
-    if (requestConfig?.retry?.delayMs !== undefined) {
-      this.params.retry.delayMs = requestConfig.retry.delayMs;
-    } else if (sdkConfig?.retry?.delayMs !== undefined) {
-      this.params.retry.delayMs = sdkConfig.retry.delayMs;
+  /**
+   * Sets the base URL for the request using hierarchical configuration resolution.
+   *
+   * Resolution logic:
+   * 1. First tries to resolve 'baseUrl' (string) from the resolved config
+   * 2. If no 'baseUrl' found, falls back to 'environment' (enum) from the resolved config
+   * 3. 'baseUrl' always takes precedence over 'environment'
+   *
+   * @param config - Resolved configuration from all hierarchy levels
+   * @returns This builder instance for method chaining
+   */
+  setBaseUrl(config?: SdkConfig): RequestBuilder<Page> {
+    if (!config) {
+      return this;
     }
 
-    return this;
-  }
-
-  setResponseValidation(sdkConfig: SdkConfig, requestConfig?: RequestConfig): RequestBuilder<Page> {
-    if (requestConfig?.validation?.responseValidation !== undefined) {
-      this.params.validation.responseValidation = requestConfig.validation.responseValidation;
-    } else if (sdkConfig?.validation?.responseValidation !== undefined) {
-      this.params.validation.responseValidation = sdkConfig.validation.responseValidation;
+    // First try baseUrl string
+    if ('baseUrl' in config && typeof config.baseUrl === 'string' && config.baseUrl) {
+      this.params.baseUrl = config.baseUrl;
+      return this;
     }
 
-    return this;
-  }
-
-  setBaseUrl(baseUrl: string | undefined): RequestBuilder<Page> {
-    if (baseUrl) {
-      this.params.baseUrl = baseUrl;
+    // If no baseUrl string, try environment enum
+    if ('environment' in config && config.environment) {
+      this.params.baseUrl = config.environment as string;
     }
 
     return this;
@@ -85,11 +117,6 @@ export class RequestBuilder<Page extends unknown[] = unknown[]> {
     return this;
   }
 
-  setConfig(config: SdkConfig): RequestBuilder<Page> {
-    this.params.config = config;
-    return this;
-  }
-
   setRequestContentType(contentType: ContentType): RequestBuilder<Page> {
     this.params.requestContentType = contentType;
     return this;
@@ -100,7 +127,26 @@ export class RequestBuilder<Page extends unknown[] = unknown[]> {
     return this;
   }
 
+  setFilename(filename?: string): RequestBuilder<Page> {
+    if (filename !== undefined) {
+      this.params.filename = filename;
+    }
+    return this;
+  }
+
+  setFilenames(filenames?: string[]): RequestBuilder<Page> {
+    if (filenames !== undefined) {
+      this.params.filenames = filenames;
+    }
+    return this;
+  }
+
   setPagination(pagination: RequestPagination<Page>): RequestBuilder<Page> {
+    this.params.pagination = pagination;
+    return this;
+  }
+
+  setCursorPagination(pagination: RequestCursorPagination<Page>): RequestBuilder<Page> {
     this.params.pagination = pagination;
     return this;
   }
@@ -115,9 +161,11 @@ export class RequestBuilder<Page extends unknown[] = unknown[]> {
       value: `${prefix ?? 'Bearer'} ${accessToken}`,
       explode: false,
       style: SerializationStyle.SIMPLE,
-      encode: true,
+      // Header values are not URL-encoded; `encode` only means something for path/query params.
+      encode: false,
       isLimit: false,
       isOffset: false,
+      isCursor: false,
     });
     return this;
   }
@@ -132,27 +180,49 @@ export class RequestBuilder<Page extends unknown[] = unknown[]> {
       value: `Basic ${this.toBase64(`${username}:${password}`)}`,
       explode: false,
       style: SerializationStyle.SIMPLE,
-      encode: true,
+      // Header values are not URL-encoded; `encode` only means something for path/query params.
+      encode: false,
       isLimit: false,
       isOffset: false,
+      isCursor: false,
     });
     return this;
   }
 
-  addApiKeyAuth(apiKey?: string, keyName?: string): RequestBuilder<Page> {
+  addApiKeyAuth(
+    apiKey?: string,
+    keyName?: string,
+    location?: 'header' | 'query' | 'cookie',
+  ): RequestBuilder<Page> {
     if (apiKey === undefined) {
       return this;
     }
 
-    this.params.headers.set(keyName ?? 'X-API-KEY', {
-      key: keyName ?? 'X-API-KEY',
+    const resolvedKeyName = keyName ?? 'X-API-KEY';
+    const resolvedLocation = location ?? 'header';
+    // Query params use `form`/explode-true so they render as `key=value`;
+    // headers and cookies render the value plainly (`simple`/explode-false).
+    const isQuery = resolvedLocation === 'query';
+    const param = {
+      key: resolvedKeyName,
       value: apiKey,
-      explode: false,
-      style: SerializationStyle.SIMPLE,
-      encode: true,
+      explode: isQuery,
+      style: isQuery ? SerializationStyle.FORM : SerializationStyle.SIMPLE,
+      // Query values go through the FORM branch, which always URL-encodes regardless of this flag.
+      // Header/cookie values are not URL-encoded, so `encode` must be false for those locations.
+      encode: isQuery,
       isLimit: false,
       isOffset: false,
-    });
+      isCursor: false,
+    };
+
+    if (resolvedLocation === 'query') {
+      this.params.queryParams.set(resolvedKeyName, param);
+    } else if (resolvedLocation === 'cookie') {
+      this.params.cookies.set(resolvedKeyName, param);
+    } else {
+      this.params.headers.set(resolvedKeyName, param);
+    }
     return this;
   }
 
@@ -186,13 +256,14 @@ export class RequestBuilder<Page extends unknown[] = unknown[]> {
       encode: param.encode ?? true,
       isLimit: !!param.isLimit,
       isOffset: !!param.isOffset,
+      isCursor: !!param.isCursor,
     });
 
     return this;
   }
 
   addQueryParam(param: Partial<RequestParameter>): RequestBuilder<Page> {
-    if (param.value === undefined || param.key === undefined) {
+    if (param.key === undefined) {
       return this;
     }
 
@@ -204,6 +275,7 @@ export class RequestBuilder<Page extends unknown[] = unknown[]> {
       encode: param.encode ?? true,
       isLimit: !!param.isLimit,
       isOffset: !!param.isOffset,
+      isCursor: !!param.isCursor,
     });
 
     return this;
@@ -222,20 +294,41 @@ export class RequestBuilder<Page extends unknown[] = unknown[]> {
       encode: param.encode ?? false,
       isLimit: !!param.isLimit,
       isOffset: !!param.isOffset,
+      isCursor: !!param.isCursor,
     });
 
     return this;
   }
 
+  addCookieParam(param: Partial<RequestParameter>): RequestBuilder<Page> {
+    if (param.value === undefined || param.key === undefined) {
+      return this;
+    }
+
+    this.params.cookies.set(param.key, {
+      key: param.key,
+      value: param.value,
+      explode: param.explode ?? true,
+      style: param.style ?? SerializationStyle.FORM,
+      encode: param.encode ?? false,
+      isLimit: !!param.isLimit,
+      isOffset: !!param.isOffset,
+      isCursor: !!param.isCursor,
+    });
+
+    return this;
+  }
+
+  /**
+   * Builds and returns the configured Request object.
+   * Call this method after configuring all request parameters.
+   * @returns A new Request instance with all configured parameters
+   */
   public build(): Request<Page> {
     return new Request<Page>(this.params);
   }
 
   private toBase64(str: string): string {
-    if (typeof window === 'undefined') {
-      return Buffer.from(str, 'utf-8').toString('base64');
-    } else {
-      return btoa(unescape(encodeURIComponent(str)));
-    }
+    return encodeBase64(str);
   }
 }

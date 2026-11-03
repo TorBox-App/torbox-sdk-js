@@ -1,59 +1,102 @@
 import { ZodError } from 'zod';
+import { ValidationError } from '../errors/validation-error';
 import { Request } from '../transport/request';
 import { ContentType, HttpResponse, RequestHandler } from '../types';
-import { ValidationError } from '../errors/validation-error';
 
+/**
+ * Request handler that validates and serializes request bodies based on content type.
+ * Supports JSON, XML, text, binary, form data, and multipart form data.
+ */
 export class RequestValidationHandler implements RequestHandler {
+  /** Next handler in the chain */
   next?: RequestHandler;
 
+  /**
+   * Handles a standard HTTP request with validation.
+   * @template T - The expected response data type
+   * @param request - The HTTP request to validate
+   * @returns A promise that resolves to the HTTP response
+   * @throws Error if no next handler is set
+   */
   async handle<T>(request: Request): Promise<HttpResponse<T>> {
     if (!this.next) {
       throw new Error('No next handler set in ContentTypeHandler.');
     }
 
-    this.validateRequest(request);
+    await this.validateRequest(request);
 
     return this.next.handle<T>(request);
   }
 
+  /**
+   * Handles a streaming HTTP request with validation.
+   * @template T - The expected response data type for each chunk
+   * @param request - The HTTP request to validate
+   * @returns An async generator that yields HTTP responses
+   * @throws Error if no next handler is set
+   */
   async *stream<T>(request: Request): AsyncGenerator<HttpResponse<T>> {
     if (!this.next) {
       throw new Error('No next handler set in ContentTypeHandler.');
     }
 
-    this.validateRequest(request);
+    await this.validateRequest(request);
 
     yield* this.next.stream<T>(request);
   }
 
+  /**
+   * Validates and serializes the request body based on its content type.
+   * @param request - The HTTP request to validate
+   * @throws ValidationError if Zod schema validation fails
+   */
   validateRequest(request: Request): void {
-    if (request.requestContentType === ContentType.Json) {
-      try {
-        const parsedBody = request.requestSchema?.parse(request.body);
-        request.body = JSON.stringify(parsedBody);
-      } catch (error) {
-        if (error instanceof ZodError) {
-          throw new ValidationError(error, request.body);
-        }
-        throw error;
-      }
-    } else if (
-      request.requestContentType === ContentType.Xml ||
+    const requestValidationEnabled = request.config.validation?.requestValidation ?? true;
+
+    if (
       request.requestContentType === ContentType.Text ||
       request.requestContentType === ContentType.Image ||
       request.requestContentType === ContentType.Binary
     ) {
       request.body = request.body;
     } else if (request.requestContentType === ContentType.FormUrlEncoded) {
-      request.body = this.toFormUrlEncoded(request);
+      request.body = this.toFormUrlEncoded(request, requestValidationEnabled);
     } else if (request.requestContentType === ContentType.MultipartFormData) {
-      request.body = this.toFormData(request.body);
+      request.body = this.toFormData(request.body, request.filename, request.filenames);
     } else {
-      request.body = JSON.stringify(request.requestSchema?.parse(request.body));
+      // ContentType.Json and everything else (arbitrary/unrecognized content types) serialize the
+      // same way: validate-then-stringify, or stringify as-is when validation is disabled.
+      request.body = requestValidationEnabled
+        ? JSON.stringify(this.validateBody(request, request.body))
+        : JSON.stringify(request.body);
     }
   }
 
-  toFormUrlEncoded(request: Request): string {
+  /**
+   * Validates a request body against its schema.
+   * @throws ValidationError if Zod schema validation fails
+   */
+  private validateBody(request: Request, body: unknown): unknown {
+    if (!request.requestSchema) {
+      return body;
+    }
+    try {
+      return request.requestSchema.parse(body);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw new ValidationError(error, body);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Converts request body to URL-encoded form data format.
+   * @param request - The HTTP request with body to convert
+   * @param requestValidationEnabled - Whether to validate the body against its schema first
+   * @returns URL-encoded string representation of the body
+   */
+  toFormUrlEncoded(request: Request, requestValidationEnabled: boolean): string {
     if (request.body === undefined) {
       return '';
     }
@@ -66,7 +109,9 @@ export class RequestValidationHandler implements RequestHandler {
       return request.body.toString();
     }
 
-    const validatedBody = request.requestSchema?.parse(request.body);
+    const validatedBody = requestValidationEnabled
+      ? this.validateBody(request, request.body)
+      : request.body;
 
     if (validatedBody instanceof FormData) {
       const params = new URLSearchParams();
@@ -78,12 +123,15 @@ export class RequestValidationHandler implements RequestHandler {
       return params.toString();
     }
 
-    if (typeof validatedBody === 'object' && !Array.isArray(validatedBody)) {
+    if (
+      typeof validatedBody === 'object' &&
+      validatedBody !== null &&
+      !Array.isArray(validatedBody)
+    ) {
       const params = new URLSearchParams();
       for (const [key, value] of Object.entries(validatedBody)) {
-        if (value != null) {
-          params.append(key, `${value}`);
-        }
+        if (value == null) continue;
+        params.append(key, `${value}`);
       }
       return params.toString();
     }
@@ -91,15 +139,34 @@ export class RequestValidationHandler implements RequestHandler {
     return '';
   }
 
-  toFormData(body: Record<string, any>): FormData | undefined {
+  /**
+   * Converts request body to multipart form data format.
+   * Handles files (ArrayBuffer, Uint8Array, Buffer, or Blob — see `isFileLike` below), arrays,
+   * and regular values.
+   * @param body - The request body object
+   * @param filename - Optional filename for single file uploads
+   * @param filenames - Optional filenames array for array of file uploads
+   * @returns FormData object with serialized body
+   */
+  toFormData(body: Record<string, any>, filename?: string, filenames?: string[]): FormData {
     const formData = new FormData();
 
     Object.keys(body).forEach((key: any) => {
       const value: any = body[key];
       if (Array.isArray(value)) {
-        value.forEach((v, i) => formData.append(`${key}[${i}]`, v));
-      } else if (value instanceof ArrayBuffer) {
-        formData.append(key, new Blob([value]));
+        value.forEach((v, i) => {
+          if (isFileLike(v)) {
+            // For arrays of files, use the corresponding filename from filenames array
+            const fileFilename = filenames && filenames[i] ? filenames[i] : `${key}[${i}]`;
+            formData.append(`${key}[${i}]`, toBlob(v), fileFilename);
+          } else {
+            formData.append(`${key}[${i}]`, v);
+          }
+        });
+      } else if (isFileLike(value)) {
+        // For single files, use the provided filename or fallback to the key name
+        const fileFilename = filename || key;
+        formData.append(key, toBlob(value), fileFilename);
       } else {
         formData.append(key, value);
       }
@@ -107,4 +174,26 @@ export class RequestValidationHandler implements RequestHandler {
 
     return formData;
   }
+}
+
+/**
+ * Whether `value` is one of the runtime shapes Postman's `FileLike` type (FSDK-428) allows for a
+ * `format: binary` field: `ArrayBuffer`, any typed-array view (`Uint8Array` or `Buffer` — `Buffer`
+ * is itself a `Uint8Array` subclass, so `ArrayBuffer.isView` already covers it), or `Blob`. Kept
+ * in sync with `FILE_LIKE_TYPE`
+ * (`src/generate/typescript/utils/type-definition.ts`, the generator-side source of truth for the
+ * emitted TS type) — every shape that type declares must be recognized here, or a value that
+ * type-checks would silently mis-serialize as a plain form field instead of a file part.
+ */
+function isFileLike(value: unknown): value is ArrayBuffer | ArrayBufferView | Blob {
+  return (
+    value instanceof ArrayBuffer ||
+    ArrayBuffer.isView(value) ||
+    (typeof Blob !== 'undefined' && value instanceof Blob)
+  );
+}
+
+/** Wraps a `FileLike` value as a `Blob`, without double-wrapping a value that already is one. */
+function toBlob(value: ArrayBuffer | ArrayBufferView | Blob): Blob {
+  return value instanceof Blob ? value : new Blob([value as BlobPart]);
 }

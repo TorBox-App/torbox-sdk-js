@@ -1,0 +1,16 @@
+export type { CreateTorrentRequest } from './create-torrent-request';
+export type { AsyncCreateTorrentRequest } from './async-create-torrent-request';
+export type { MainApiSdkRequestDownloadLinksPostRequest1 } from './main-api-sdk-request-download-links-post-request-1';
+export type { GetTorrentCachedAvailabilityBatchRequest } from './get-torrent-cached-availability-batch-request';
+export type { GetTorrentInfoRequest } from './get-torrent-info-request';
+export type { EditTorrentItemRequest } from './edit-torrent-item-request';
+export type { MagnetToFileRequest } from './magnet-to-file-request';
+export type { CreateUsenetDownloadRequest } from './create-usenet-download-request';
+export type { MainApiSdkRequestDownloadLinksPostRequest2 } from './main-api-sdk-request-download-links-post-request-2';
+export type { GetUsenetCachedAvailabilityBatchRequest } from './get-usenet-cached-availability-batch-request';
+export type { EditUsenetItemRequest } from './edit-usenet-item-request';
+export type { CreateWebDownloadRequest } from './create-web-download-request';
+export type { MainApiSdkRequestDownloadLinksPostRequest3 } from './main-api-sdk-request-download-links-post-request-3';
+export type { GetWebDownloadCachedAvailabilityBatchRequest } from './get-web-download-cached-availability-batch-request';
+export type { EditWebDownloadItemRequest } from './edit-web-download-item-request';
+export type { GetTokenFromDeviceCodeProcessRequest } from './get-token-from-device-code-process-request';
