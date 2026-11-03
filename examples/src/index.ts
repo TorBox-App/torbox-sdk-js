@@ -1,11 +1,11 @@
-import { TorboxApi } from '@torbox/torbox-api';
+import { MainApiSdk } from 'main-api-sdk';
 
 (async () => {
-  const torboxApi = new TorboxApi({
+  const mainApiSdk = new MainApiSdk({
     token: 'YOUR_TOKEN',
   });
 
-  const { data } = await torboxApi.general.getUpStatus();
+  const data = await mainApiSdk.mainApiSdk.getUpStatus();
 
   console.log(data);
 })();

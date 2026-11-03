@@ -1,0 +1,407 @@
+{
+  "endpoints": {
+    "/{api_version}/api/torrents/createtorrent": {
+      "post": "import { CreateTorrentRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const createTorrentRequest: CreateTorrentRequest = {\t\n    file: new ArrayBuffer(0),\n    magnet: \"string\",\n    seed: \"int\",\n    allowZip: \"boolean\",\n    name: \"string\",\n    asQueued: \"boolean\",\n    addOnlyIfCached: \"boolean\"\n  };\n\n  const data = await mainApiSdk.mainApiSdk.createTorrent(\n  \"api_version\",\n  createTorrentRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/asynccreatetorrent": {
+      "post": "import { AsyncCreateTorrentRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const asyncCreateTorrentRequest: AsyncCreateTorrentRequest = {\t\n    file: new ArrayBuffer(0),\n    magnet: \"string\",\n    seed: \"int\",\n    allowZip: \"boolean\",\n    name: \"string\",\n    asQueued: \"boolean\",\n    addOnlyIfCached: \"boolean\"\n  };\n\n  const data = await mainApiSdk.mainApiSdk.asyncCreateTorrent(\n  \"api_version\",\n  asyncCreateTorrentRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/controltorrent": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.controlTorrent(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/requestdl": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLink(\n  \"api_version\",\n  {\n      token: \"token\",\n      torrentId: \"torrent_id\",\n      fileId: \"file_id\",\n      zipLink: \"zip_link\",\n      userIp: \"user_ip\",\n      redirect: \"redirect\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/requestdl/batch": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLinksGet(\n  \"api_version\",\n  {\n      token: \"token\",\n      torrentId: \"torrent_id\",\n      fileIds: \"file_ids\",\n      userIp: \"user_ip\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n",
+      "post": "import { MainApiSdk, MainApiSdkRequestDownloadLinksPostRequest1 } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const mainApiSdkRequestDownloadLinksPostRequest1: MainApiSdkRequestDownloadLinksPostRequest1 = {\t\n    fileIds: [62]\n  };\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLinksPost(\n  \"api_version\",\n  mainApiSdkRequestDownloadLinksPostRequest1,\n  {\n      token: \"token\",\n      torrentId: \"torrent_id\",\n      userIp: \"user_ip\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/mylist": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getTorrentList(\n  \"api_version\",\n  {\n      bypassCache: \"bypass_cache\",\n      id: \"id\",\n      offset: \"offset\",\n      limit: \"limit\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/checkcached": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getTorrentCachedAvailability(\n  \"api_version\",\n  {\n      hash: \"hash\",\n      format: \"object\",\n      listFiles: \"list_files\",\n  }\n);\n\n  console.log(data);\n})();\n",
+      "post": "import { GetTorrentCachedAvailabilityBatchRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const getTorrentCachedAvailabilityBatchRequest: GetTorrentCachedAvailabilityBatchRequest = {\t\n    hashes: [\"string\"]\n  };\n\n  const data = await mainApiSdk.mainApiSdk.getTorrentCachedAvailabilityBatch(\n  \"api_version\",\n  getTorrentCachedAvailabilityBatchRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/exportdata": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.exportTorrentData(\n  \"api_version\",\n  {\n      torrentId: \"torrent_id\",\n      type: \"type\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/torrentinfo": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getTorrentInfo(\n  \"api_version\",\n  {\n      hash: \"hash\",\n      timeout: \"30\",\n      useCacheLookup: \"false\",\n  }\n);\n\n  console.log(data);\n})();\n",
+      "post": "import { GetTorrentInfoRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const getTorrentInfoRequest: GetTorrentInfoRequest = {\t\n    magnet: \"string\",\n    file: new ArrayBuffer(0),\n    hash: \"string\",\n    timeout: \"integer\",\n    useCacheLookup: \"bool\",\n    peersOnly: \"bool\"\n  };\n\n  const data = await mainApiSdk.mainApiSdk.getTorrentInfo1(\n  \"api_version\",\n  getTorrentInfoRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/edittorrent": {
+      "put": "import { EditTorrentItemRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const editTorrentItemRequest: EditTorrentItemRequest = {\t\n    torrentId: 64,\n    name: \"string\",\n    tags: [\"string\"],\n    alternativeHashes: [\"string\"],\n    airlocked: true\n  };\n\n  const data = await mainApiSdk.mainApiSdk.editTorrentItem(\n  \"api_version\",\n  editTorrentItemRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/torrents/magnettofile": {
+      "post": "import { MagnetToFileRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const magnetToFileRequest: MagnetToFileRequest = {\t\n    magnet: \"string\"\n  };\n\n  const data = await mainApiSdk.mainApiSdk.magnetToFile(\n  \"api_version\",\n  magnetToFileRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/createusenetdownload": {
+      "post": "import { CreateUsenetDownloadRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const createUsenetDownloadRequest: CreateUsenetDownloadRequest = {\t\n    file: new ArrayBuffer(0),\n    link: \"string\",\n    name: \"string\",\n    password: \"string\",\n    postProcessing: \"integer\",\n    asQueued: \"boolean\",\n    addOnlyIfCached: \"boolean\"\n  };\n\n  const data = await mainApiSdk.mainApiSdk.createUsenetDownload(\n  \"api_version\",\n  createUsenetDownloadRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/controlusenetdownload": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.controlUsenetDownload(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/requestdl": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLink1(\n  \"api_version\",\n  {\n      token: \"token\",\n      usenetId: \"usenet_id\",\n      fileId: \"file_id\",\n      zipLink: \"zip_link\",\n      userIp: \"user_ip\",\n      redirect: \"redirect\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/requestdl/batch": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLinksGet1(\n  \"api_version\",\n  {\n      token: \"token\",\n      usenetId: \"usenet_id\",\n      fileIds: \"file_ids\",\n      userIp: \"user_ip\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n",
+      "post": "import { MainApiSdk, MainApiSdkRequestDownloadLinksPostRequest2 } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const mainApiSdkRequestDownloadLinksPostRequest2: MainApiSdkRequestDownloadLinksPostRequest2 = {\t\n    fileIds: [79]\n  };\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLinksPost1(\n  \"api_version\",\n  mainApiSdkRequestDownloadLinksPostRequest2,\n  {\n      token: \"token\",\n      usenetId: \"usenet_id\",\n      userIp: \"user_ip\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/mylist": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getUsenetList(\n  \"api_version\",\n  {\n      bypassCache: \"bypass_cache\",\n      id: \"id\",\n      offset: \"offset\",\n      limit: \"limit\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/checkcached": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getUsenetCachedAvailability(\n  \"api_version\",\n  {\n      hash: \"hash\",\n      format: \"format\",\n      listFiles: \"list_files\",\n  }\n);\n\n  console.log(data);\n})();\n",
+      "post": "import { GetUsenetCachedAvailabilityBatchRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const getUsenetCachedAvailabilityBatchRequest: GetUsenetCachedAvailabilityBatchRequest = {\t\n    hashes: [\"string\"]\n  };\n\n  const data = await mainApiSdk.mainApiSdk.getUsenetCachedAvailabilityBatch(\n  \"api_version\",\n  getUsenetCachedAvailabilityBatchRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/editusenetdownload": {
+      "put": "import { EditUsenetItemRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const editUsenetItemRequest: EditUsenetItemRequest = {\t\n    usenetDownloadId: 73,\n    name: \"string\",\n    tags: [\"string\"],\n    alternativeHashes: [\"string\"],\n    airlocked: true\n  };\n\n  const data = await mainApiSdk.mainApiSdk.editUsenetItem(\n  \"api_version\",\n  editUsenetItemRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/provider/connection": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getNewsServerConnectionInformation(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/provider/account": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getNewsServerAccount(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/usenet/provider/account/resetpw": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.resetNewsServerAccountPassword(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/webdl/createwebdownload": {
+      "post": "import { CreateWebDownloadRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const createWebDownloadRequest: CreateWebDownloadRequest = {\t\n    link: \"string\",\n    password: \"string\",\n    name: \"string\",\n    asQueued: \"boolean\",\n    addOnlyIfCached: \"boolean\"\n  };\n\n  const data = await mainApiSdk.mainApiSdk.createWebDownload(\n  \"api_version\",\n  createWebDownloadRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/webdl/controlwebdownload": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.controlWebDownload(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/webdl/requestdl": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLink2(\n  \"api_version\",\n  {\n      token: \"token\",\n      webId: \"web_id\",\n      fileId: \"file_id\",\n      zipLink: \"zip_link\",\n      userIp: \"user_ip\",\n      redirect: \"redirect\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/webdl/requestdl/batch": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLinksGet2(\n  \"api_version\",\n  {\n      token: \"token\",\n      webId: \"web_id\",\n      fileIds: \"file_ids\",\n      userIp: \"user_ip\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n",
+      "post": "import { MainApiSdk, MainApiSdkRequestDownloadLinksPostRequest3 } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const mainApiSdkRequestDownloadLinksPostRequest3: MainApiSdkRequestDownloadLinksPostRequest3 = {\t\n    fileIds: [60]\n  };\n\n  const data = await mainApiSdk.mainApiSdk.requestDownloadLinksPost2(\n  \"api_version\",\n  mainApiSdkRequestDownloadLinksPostRequest3,\n  {\n      token: \"token\",\n      webId: \"web_id\",\n      userIp: \"user_ip\",\n      appendName: \"append_name\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/webdl/mylist": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getWebDownloadList(\n  \"api_version\",\n  {\n      bypassCache: \"bypass_cache\",\n      id: \"id\",\n      offset: \"offset\",\n      limit: \"limit\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/webdl/checkcached": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getWebDownloadCachedAvailability(\n  \"api_version\",\n  {\n      hash: \"hash\",\n      format: \"object\",\n      listFiles: \"false\",\n  }\n);\n\n  console.log(data);\n})();\n",
+      "post": "import { GetWebDownloadCachedAvailabilityBatchRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const getWebDownloadCachedAvailabilityBatchRequest: GetWebDownloadCachedAvailabilityBatchRequest = {\t\n    hashes: [\"string\"]\n  };\n\n  const data = await mainApiSdk.mainApiSdk.getWebDownloadCachedAvailabilityBatch(\n  \"api_version\",\n  getWebDownloadCachedAvailabilityBatchRequest,\n  {\n      format: \"format\",\n      listFiles: \"list_files\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/webdl/hosters": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getHosterList(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/webdl/editwebdownload": {
+      "put": "import { EditWebDownloadItemRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const editWebDownloadItemRequest: EditWebDownloadItemRequest = {\t\n    webdlId: 52,\n    name: \"string\",\n    tags: [\"string\"],\n    alternativeHashes: [\"string\"],\n    airlocked: true\n  };\n\n  const data = await mainApiSdk.mainApiSdk.editWebDownloadItem(\n  \"api_version\",\n  editWebDownloadItemRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getUpStatus();\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/stats": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getStats(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/changelogs/rss": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getChangelogsRssFeed(\n  \"api_version\",\n  {\n      offset: \"0\",\n      limit: \"10\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/changelogs/json": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getChangelogsJson(\n  \"api_version\",\n  {\n      offset: \"0\",\n      limit: \"10\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/speedtest": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getSpeedtestFiles(\n  \"api_version\",\n  {\n      testLength: \"short\",\n      region: \"region\",\n      userIp: \"user_ip\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/notifications/rss": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getRssNotificationFeed(\n  \"api_version\",\n  {\n      token: \"token\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/notifications/mynotifications": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getNotificationFeed(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/notifications/clear": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.clearAllNotifications(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/notifications/clear/{notification_id}": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.clearSingleNotification(\n  \"api_version\",\n  \"notification_id\"\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/notifications/test": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.sendTestNotification(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/refreshtoken": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.refreshApiToken(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/me": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getUserData(\n  \"api_version\",\n  {\n      settings: \"false\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/addreferral": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.addReferralToAccount(\n  \"api_version\",\n  {\n      referral: \"referral\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/getconfirmation": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getConfirmationCode(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/auth/device/start": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.startDeviceCodeAuthorizationProcess(\n  \"api_version\",\n  {\n      app: \"Third Party App\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/auth/device/token": {
+      "post": "import { GetTokenFromDeviceCodeProcessRequest, MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  \n  const getTokenFromDeviceCodeProcessRequest: GetTokenFromDeviceCodeProcessRequest = {\t\n    deviceCode: \"XXXXXXXXXXXXXXXXXXXXXXXXX\"\n  };\n\n  const data = await mainApiSdk.mainApiSdk.getTokenFromDeviceCodeProcess(\n  \"api_version\",\n  getTokenFromDeviceCodeProcessRequest\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/referraldata": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getReferralData(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/subscriptions": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getSubscriptions(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/transactions": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getTransactions(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/transaction/pdf": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getTransactionPdf(\n  \"api_version\",\n  {\n      transactionId: \"transaction_id\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/settings/editsettings": {
+      "put": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.editUserSettings(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/user/stats": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getUserStats(\n  \"api_version\",\n  {\n      general: \"true\",\n      bandwidth: \"false\",\n      bandwidthGrouping: \"day\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/rss/addrss": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.addRssFeed(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/rss/controlrss": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.controlRssFeed(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/rss/modifyrss": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.editRssFeed(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/rss/getfeeds": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getUserRssFeeds(\n  \"api_version\",\n  {\n      id: \"id\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/rss/getfeeditems": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getRssFeedItems(\n  \"api_version\",\n  {\n      rssFeedId: \"rss_feed_id\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/integration/jobs": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getAllJobs(\"api_version\");\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/integration/job/{job_id}": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getSpecificJob(\n  \"api_version\",\n  \"job_id\"\n);\n\n  console.log(data);\n})();\n",
+      "delete": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.cancelSpecificJob(\n  \"api_version\",\n  \"job_id\"\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/integration/jobs/{hash}": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getAllJobsByHash(\n  \"api_version\",\n  \"hash\"\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/queued/getqueued": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getQueuedDownloads(\n  \"api_version\",\n  {\n      bypassCache: \"bypass_cache\",\n      id: \"id\",\n      offset: \"offset\",\n      limit: \"limit\",\n      type: \"torrent\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/queued/controlqueued": {
+      "post": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const input = {};\n\n  const data = await mainApiSdk.mainApiSdk.controlQueuedDownloads(\n  \"api_version\",\n  input\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/stream/createstream": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.createStream(\n  \"api_version\",\n  {\n      id: \"id\",\n      fileId: \"0\",\n      type: \"torrent\",\n      chosenSubtitleIndex: \"chosen_subtitle_index\",\n      chosenAudioIndex: \"0\",\n      chosenResolutionIndex: \"chosen_resolution_index\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    },
+    "/{api_version}/api/stream/getstreamdata": {
+      "get": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getStreamData(\n  \"api_version\",\n  {\n      presignedToken: \"presigned_token\",\n      token: \"token\",\n      chosenSubtitleIndex: \"chosen_subtitle_index\",\n      chosenAudioIndex: \"chosen_audio_index\",\n      chosenResolutionIndex: \"chosen_resolution_index\",\n  }\n);\n\n  console.log(data);\n})();\n"
+    }
+  },
+  "methodResponses": {
+    "/{api_version}/api/torrents/createtorrent": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/torrents/asynccreatetorrent": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/torrents/controltorrent": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/torrents/requestdl": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/torrents/requestdl/batch": {
+      "get": "{  }",
+      "post": "{  }"
+    },
+    "/{api_version}/api/torrents/mylist": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/torrents/checkcached": {
+      "get": "{  }",
+      "post": "{  }"
+    },
+    "/{api_version}/api/torrents/exportdata": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/torrents/torrentinfo": {
+      "get": "{  }",
+      "post": "{  }"
+    },
+    "/{api_version}/api/torrents/edittorrent": {
+      "put": "{  }"
+    },
+    "/{api_version}/api/torrents/magnettofile": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/usenet/createusenetdownload": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/usenet/controlusenetdownload": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/usenet/requestdl": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/usenet/requestdl/batch": {
+      "get": "{  }",
+      "post": "{  }"
+    },
+    "/{api_version}/api/usenet/mylist": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/usenet/checkcached": {
+      "get": "{  }",
+      "post": "{  }"
+    },
+    "/{api_version}/api/usenet/editusenetdownload": {
+      "put": "{  }"
+    },
+    "/{api_version}/api/usenet/provider/connection": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/usenet/provider/account": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/usenet/provider/account/resetpw": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/webdl/createwebdownload": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/webdl/controlwebdownload": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/webdl/requestdl": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/webdl/requestdl/batch": {
+      "get": "{  }",
+      "post": "{  }"
+    },
+    "/{api_version}/api/webdl/mylist": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/webdl/checkcached": {
+      "get": "{  }",
+      "post": "{  }"
+    },
+    "/{api_version}/api/webdl/hosters": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/webdl/editwebdownload": {
+      "put": "{  }"
+    },
+    "/": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/stats": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/changelogs/rss": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/changelogs/json": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/speedtest": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/notifications/rss": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/notifications/mynotifications": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/notifications/clear": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/notifications/clear/{notification_id}": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/notifications/test": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/user/refreshtoken": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/user/me": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/user/addreferral": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/user/getconfirmation": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/user/auth/device/start": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/user/auth/device/token": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/user/referraldata": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/user/subscriptions": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/user/transactions": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/user/transaction/pdf": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/user/settings/editsettings": {
+      "put": "{  }"
+    },
+    "/{api_version}/api/user/stats": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/rss/addrss": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/rss/controlrss": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/rss/modifyrss": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/rss/getfeeds": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/rss/getfeeditems": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/integration/jobs": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/integration/job/{job_id}": {
+      "get": "{  }",
+      "delete": "{  }"
+    },
+    "/{api_version}/api/integration/jobs/{hash}": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/queued/getqueued": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/queued/controlqueued": {
+      "post": "{  }"
+    },
+    "/{api_version}/api/stream/createstream": {
+      "get": "{  }"
+    },
+    "/{api_version}/api/stream/getstreamdata": {
+      "get": "{  }"
+    }
+  },
+  "example": "import { MainApiSdk } from 'main-api-sdk';\n\n(async () => {\n  const mainApiSdk = new MainApiSdk({\n\ttoken: 'YOUR_TOKEN',\n});\n\n  const data = await mainApiSdk.mainApiSdk.getUpStatus();\n\n  console.log(data);\n})();\n",
+  "authentication": {
+    "bearer": {
+      "constructor": "const sdk = new MainApiSdk({ token: 'YOUR_TOKEN' });",
+      "setter": "const sdk = new MainApiSdk();\nsdk.token = 'YOUR_TOKEN';"
+    }
+  }
+}

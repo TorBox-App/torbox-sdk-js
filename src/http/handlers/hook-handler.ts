@@ -4,12 +4,27 @@ import { HttpError } from '../error';
 import { Hook } from '../hooks/hook';
 import { TransportHookAdapter } from '../transport/transport-hook-adapter';
 import { getContentTypeDefinition } from '../utils/content-type';
+import { ThrowableError } from '../errors/throwable-error';
+import { ErrorDefinition } from '../transport/types';
 
+/**
+ * Request handler that invokes custom hooks before requests and after responses.
+ * Enables request/response interception and custom error handling.
+ */
 export class HookHandler implements RequestHandler {
+  /** Next handler in the chain */
   next?: RequestHandler;
 
   constructor(private readonly hook: Hook) {}
 
+  /**
+   * Handles a standard HTTP request with hook invocation.
+   * Calls beforeRequest hook, processes the request, and calls the afterResponse hook.
+   * @template T - The expected response data type
+   * @param request - The HTTP request to process
+   * @returns A promise that resolves to the HTTP response
+   * @throws Error if no next handler is set, or if error handling fails
+   */
   async handle<T>(request: Request): Promise<HttpResponse<T>> {
     if (!this.next) {
       throw new Error('No next handler set in hook handler.');
@@ -27,28 +42,62 @@ export class HookHandler implements RequestHandler {
       return await hook.afterResponse(nextRequest, response, hookParams);
     }
 
+    return await this.throwErrorResponse<T>(request, response);
+  }
+
+  private async throwErrorResponse<T>(
+    request: Request,
+    response: HttpResponse<T>,
+    resolveUndeclaredError?: () => Promise<unknown>,
+  ): Promise<never> {
+    // Handle error responses
+    const arrayBuffer = response.raw;
+
     const rawContentType = response.metadata.headers['content-type']?.toLocaleLowerCase() || '';
     const contentType = getContentTypeDefinition(rawContentType);
     const statusCode = response.metadata.status;
 
-    const error = request.errors.find((error) => {
+    const error = request.errors.find((error): error is ErrorDefinition => {
       return error.contentType === contentType && error.status === statusCode;
     });
 
-    if (error?.error) {
-      const decodedBody = new TextDecoder().decode(response.raw);
-      const json = JSON.parse(decodedBody);
-      throw new error.error((json as any)?.message || '', json);
+    if (error) {
+      const decodedBody = new TextDecoder().decode(arrayBuffer);
+      let json: unknown = undefined;
+      if (decodedBody.trim().length > 0) {
+        try {
+          json = JSON.parse(decodedBody);
+        } catch {
+          // Body present but not valid JSON — pass undefined payload so the
+          // typed error still surfaces instead of a SyntaxError crash.
+        }
+      }
+      const customError = error.error.from((json as any)?.message || '', json);
+      // Attach metadata to custom error for analytics tracking
+      customError.metadata = response.metadata;
+      customError.throw();
     }
 
-    const decodedBody = new TextDecoder().decode(response.raw);
+    if (resolveUndeclaredError) {
+      throw await resolveUndeclaredError();
+    }
+
+    const decodedBody = new TextDecoder().decode(arrayBuffer);
     throw new HttpError(
       response.metadata,
-      response.raw,
+      arrayBuffer,
       `Unexpected response body for error status.\nStatusCode: ${response.metadata.status}\nBody: ${decodedBody}`,
     );
   }
 
+  /**
+   * Handles a streaming HTTP request with hook invocation.
+   * Calls beforeRequest hook and afterResponse/onError hooks for each chunk.
+   * @template T - The expected response data type for each chunk
+   * @param request - The HTTP request to process
+   * @returns An async generator that yields HTTP responses
+   * @throws Error if no next handler is set, or if error handling fails
+   */
   async *stream<T>(request: Request): AsyncGenerator<HttpResponse<T>> {
     if (!this.next) {
       throw new Error('No next handler set in hook handler.');
@@ -66,11 +115,19 @@ export class HookHandler implements RequestHandler {
       if (response.metadata.status < 400) {
         yield await hook.afterResponse(nextRequest, response, hookParams);
       } else {
-        throw await hook.onError(nextRequest, response, hookParams);
+        return await this.throwErrorResponse<T>(request, response, () =>
+          hook.onError(nextRequest, response, hookParams),
+        );
       }
     }
   }
 
+  /**
+   * Extracts hook parameters from the request configuration.
+   * @template T - The response data type
+   * @param request - The HTTP request
+   * @returns A map of hook parameter names to values
+   */
   private getHookParams<T>(_request: Request): Map<string, string> {
     const hookParams: Map<string, string> = new Map();
     return hookParams;

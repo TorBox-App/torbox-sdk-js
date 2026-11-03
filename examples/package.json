@@ -1,13 +1,13 @@
 {
-  "name": "torbox_api",
-  "version": "1.0.6",
+  "name": "main_api_sdk",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@torbox/torbox-api": "file:../",
-    "zod": "3.22.0"
+    "main-api-sdk": "file:../",
+    "zod": "3.22.3"
   },
   "scripts": {
-    "setup": "npm --prefix ../ install && npm --prefix ../ run build && npm install",
+    "setup": "npm --prefix ../ install && npm --prefix ../ run build && npm install && tsc",
     "start": "tsc && node dist/index.js",
     "dev": "ts-node src/index.ts"
   },

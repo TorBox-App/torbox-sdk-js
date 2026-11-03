@@ -4,15 +4,33 @@ import { ZodUndefined } from 'zod';
 import { ContentType, HttpResponse, RequestHandler } from '../types';
 import { ResponseMatcher } from '../utils/response-matcher';
 
+/**
+ * Request handler that validates and decodes HTTP response bodies.
+ * Supports multiple content types including JSON, XML, binary, form data, and event streams.
+ */
 export class ResponseValidationHandler implements RequestHandler {
+  /** Next handler in the chain */
   next?: RequestHandler;
 
+  /**
+   * Handles a standard HTTP request and validates its response.
+   * @template T - The expected response data type
+   * @param request - The HTTP request to process
+   * @returns A promise that resolves to the validated HTTP response
+   */
   async handle<T>(request: Request): Promise<HttpResponse<T>> {
     const response = await this.next!.handle<T>(request);
 
     return this.decodeBody<T>(request, response);
   }
 
+  /**
+   * Handles a streaming HTTP request and validates response chunks.
+   * @template T - The expected response data type for each chunk
+   * @param request - The HTTP request to process
+   * @returns An async generator that yields validated HTTP responses
+   * @throws Error if response headers are enabled (streaming not supported with headers)
+   */
   async *stream<T>(request: Request): AsyncGenerator<HttpResponse<T>> {
     const stream = this.next!.stream<T>(request);
 
@@ -25,7 +43,7 @@ export class ResponseValidationHandler implements RequestHandler {
   }
 
   private splitByDataChunks<T>(response: HttpResponse<T>): HttpResponse<T>[] {
-    if (!response.metadata.headers['content-type'].includes('text/event-stream')) {
+    if (!response.metadata.headers['content-type']?.includes('text/event-stream')) {
       return [response];
     }
 
@@ -36,7 +54,7 @@ export class ResponseValidationHandler implements RequestHandler {
       .filter((line) => line.startsWith('data: '))
       .map((part) => ({
         ...response,
-        raw: encoder.encode(part),
+        raw: encoder.encode(part).buffer,
       }));
   }
 
@@ -50,13 +68,16 @@ export class ResponseValidationHandler implements RequestHandler {
 
     const contentType = responseDefinition.contentType;
     const contentTypeHandlers: {
-      [key: string]: (req: Request, resDef: ResponseDefinition, res: HttpResponse<T>) => HttpResponse<T>;
+      [key: string]: (
+        req: Request,
+        resDef: ResponseDefinition,
+        res: HttpResponse<T>,
+      ) => HttpResponse<T>;
     } = {
       [ContentType.Binary]: this.decodeFile,
       [ContentType.Image]: this.decodeFile,
       [ContentType.MultipartFormData]: this.decodeMultipartFormData,
       [ContentType.Text]: this.decodeText,
-      [ContentType.Xml]: this.decodeText,
       [ContentType.FormUrlEncoded]: this.decodeFormUrlEncoded,
       [ContentType.EventStream]: this.decodeEventStream,
     };
@@ -129,11 +150,13 @@ export class ResponseValidationHandler implements RequestHandler {
     if (decodedBody.startsWith('data: ')) {
       decodedBody = decodedBody.substring(6);
     }
+    if (decodedBody.trim().length === 0) {
+      return { ...response, data: undefined as T };
+    }
     // Note: this assumes that the content of data is a valid JSON string
-    const json = JSON.parse(decodedBody);
     return {
       ...response,
-      data: this.validate<T>(request, responseDefinition, json),
+      data: this.validate<T>(request, responseDefinition, this.parseJson(decodedBody)),
     };
   }
 
@@ -143,21 +166,54 @@ export class ResponseValidationHandler implements RequestHandler {
     response: HttpResponse<T>,
   ): HttpResponse<T> {
     const decodedBody = new TextDecoder().decode(response.raw);
-    const json = JSON.parse(decodedBody);
+    if (decodedBody.trim().length === 0) {
+      return { ...response, data: undefined as T };
+    }
     return {
       ...response,
-      data: this.validate<T>(request, responseDefinition, json),
+      data: this.validate<T>(request, responseDefinition, this.parseJson(decodedBody)),
     };
   }
 
+  /**
+   * Parses a JSON response body, rethrowing parse failures as a plain Error
+   * so callers don't have to special-case SyntaxError.
+   */
+  private parseJson(decodedBody: string): unknown {
+    try {
+      return JSON.parse(decodedBody);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      throw new Error(`Failed to parse JSON response body: ${message}`);
+    }
+  }
+
+  /**
+   * Validates response data against the expected schema if validation is enabled.
+   * @template T - The expected data type
+   * @param request - The HTTP request containing validation settings
+   * @param response - The response definition with schema
+   * @param data - The data to validate
+   * @returns The validated data (parsed if validation enabled, raw otherwise)
+   */
   private validate<T>(request: Request, response: ResponseDefinition, data: any): T {
-    if (request.validation?.responseValidation) {
-      return response.schema.parse(data);
+    if (request.config.validation?.responseValidation ?? true) {
+      return response.schema.parse(data) as T;
     }
     return data;
   }
 
-  private hasContent<T>(responseDefinition: ResponseDefinition, response: HttpResponse<T>): boolean {
+  /**
+   * Checks if a response should contain data based on its schema and status.
+   * @template T - The response data type
+   * @param responseDefinition - The response definition
+   * @param response - The HTTP response
+   * @returns True if the response should have content, false otherwise
+   */
+  private hasContent<T>(
+    responseDefinition: ResponseDefinition,
+    response: HttpResponse<T>,
+  ): boolean {
     return (
       !!responseDefinition.schema &&
       !(responseDefinition.schema instanceof ZodUndefined) &&
@@ -165,6 +221,11 @@ export class ResponseValidationHandler implements RequestHandler {
     );
   }
 
+  /**
+   * Parses URL-encoded data into an object.
+   * @param urlEncodedData - The URL-encoded string
+   * @returns An object with decoded key-value pairs
+   */
   private fromUrlEncoded(urlEncodedData: string): object {
     const pairs = urlEncodedData.split('&');
     const result: Record<string, string> = {};
@@ -179,6 +240,11 @@ export class ResponseValidationHandler implements RequestHandler {
     return result;
   }
 
+  /**
+   * Parses multipart form data into an object.
+   * @param arrayBuffer - The raw form data as ArrayBuffer
+   * @returns An object with form field names and values
+   */
   private fromFormData(arrayBuffer: ArrayBuffer): Record<string, string> {
     const decoder = new TextDecoder();
     const text = decoder.decode(arrayBuffer);
