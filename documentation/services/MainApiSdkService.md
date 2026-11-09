@@ -328,7 +328,7 @@ import { MainApiSdk, MainApiSdkRequestDownloadLinksPostRequest1 } from 'main-api
   });
 
   const mainApiSdkRequestDownloadLinksPostRequest1: MainApiSdkRequestDownloadLinksPostRequest1 = {
-    fileIds: [62],
+    fileIds: [68],
   };
 
   const data = await mainApiSdk.mainApiSdk.requestDownloadLinksPost(
@@ -362,6 +362,8 @@ import { MainApiSdk, MainApiSdkRequestDownloadLinksPostRequest1 } from 'main-api
 | id          | string | ❌       | Determines the torrent requested, will return an object rather than list. Optional.                                                                                                           |
 | offset      | string | ❌       | Determines the offset of items to get from the database. Default is 0. Optional.                                                                                                              |
 | limit       | string | ❌       | Determines the number of items to recieve per request. Default is 1000. Optional.                                                                                                             |
+| active      | string | ❌       | Shows only active downloads. Optional                                                                                                                                                         |
+| files       | string | ❌       | Exclude files from response. Optional                                                                                                                                                         |
 
 **Return Type**
 
@@ -382,6 +384,8 @@ import { MainApiSdk } from 'main-api-sdk';
     id: 'id',
     offset: 'offset',
     limit: 'limit',
+    active: 'active',
+    files: 'files',
   });
 
   console.log(data);
@@ -619,7 +623,7 @@ import { EditTorrentItemRequest, MainApiSdk } from 'main-api-sdk';
   });
 
   const editTorrentItemRequest: EditTorrentItemRequest = {
-    torrentId: 64,
+    torrentId: 61,
     name: 'string',
     tags: ['string'],
     alternativeHashes: ['string'],
@@ -912,6 +916,8 @@ import { MainApiSdk, MainApiSdkRequestDownloadLinksPostRequest2 } from 'main-api
 | id          | string | ❌       | Determines the usenet download requested, will return an object rather than list. Optional.                                                                                                   |
 | offset      | string | ❌       | Determines the offset of items to get from the database. Default is 0. Optional.                                                                                                              |
 | limit       | string | ❌       | Determines the number of items to recieve per request. Default is 1000. Optional.                                                                                                             |
+| active      | string | ❌       | Shows only active downloads. Optional                                                                                                                                                         |
+| files       | string | ❌       | Exclude files from response. Optional                                                                                                                                                         |
 
 **Return Type**
 
@@ -932,6 +938,8 @@ import { MainApiSdk } from 'main-api-sdk';
     id: 'id',
     offset: 'offset',
     limit: 'limit',
+    active: 'active',
+    files: 'files',
   });
 
   console.log(data);
@@ -1048,7 +1056,7 @@ import { EditUsenetItemRequest, MainApiSdk } from 'main-api-sdk';
   });
 
   const editUsenetItemRequest: EditUsenetItemRequest = {
-    usenetDownloadId: 73,
+    usenetDownloadId: 27,
     name: 'string',
     tags: ['string'],
     alternativeHashes: ['string'],
@@ -1366,7 +1374,7 @@ import { MainApiSdk, MainApiSdkRequestDownloadLinksPostRequest3 } from 'main-api
   });
 
   const mainApiSdkRequestDownloadLinksPostRequest3: MainApiSdkRequestDownloadLinksPostRequest3 = {
-    fileIds: [60],
+    fileIds: [63],
   };
 
   const data = await mainApiSdk.mainApiSdk.requestDownloadLinksPost2(
@@ -1400,6 +1408,8 @@ import { MainApiSdk, MainApiSdkRequestDownloadLinksPostRequest3 } from 'main-api
 | id          | string | ❌       | Determines the torrent requested, will return an object rather than list. Optional.                                                                                                           |
 | offset      | string | ❌       | Determines the offset of items to get from the database. Default is 0. Optional.                                                                                                              |
 | limit       | string | ❌       | Determines the number of items to recieve per request. Default is 1000. Optional.                                                                                                             |
+| active      | string | ❌       | Shows only active downloads. Optional                                                                                                                                                         |
+| files       | string | ❌       | Exclude files from response. Optional                                                                                                                                                         |
 
 **Return Type**
 
@@ -1420,6 +1430,8 @@ import { MainApiSdk } from 'main-api-sdk';
     id: 'id',
     offset: 'offset',
     limit: 'limit',
+    active: 'active',
+    files: 'files',
   });
 
   console.log(data);
@@ -1576,7 +1588,7 @@ import { EditWebDownloadItemRequest, MainApiSdk } from 'main-api-sdk';
   });
 
   const editWebDownloadItemRequest: EditWebDownloadItemRequest = {
-    webdlId: 52,
+    webdlId: 71,
     name: 'string',
     tags: ['string'],
     alternativeHashes: ['string'],

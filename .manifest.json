@@ -1,6 +1,6 @@
 {
-  "sdkGenVersion": "3.17.0",
-  "resolvedGeneratorVersion": "3.17.0",
+  "sdkGenVersion": "3.20.0",
+  "resolvedGeneratorVersion": "3.20.0",
   "config": {
     "schemaVersion": "sdk-config-ir/v1",
     "source": {
@@ -14,7 +14,7 @@
       "language": "typescript",
       "sourceOrigin": "postman",
       "sdkName": "main-api-sdk",
-      "sdkVersion": "1.0.0"
+      "sdkVersion": "1.0.1"
     },
     "api": {
       "baseUrl": "",
@@ -158,7 +158,7 @@
     ".env.example": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     ".github/workflows/release.yml": "97b1ef13d02af6b39c9b8209f007b6778e64c42efd6b74827588988e5e7bf877",
     ".gitignore": "5f515684cbf8243009414e638b28e93a70a884b81e3e16c38bb01124419e44b2",
-    "README.md": "98b0eabd588c1dbcd99a2594a23a4efb8b0d8d8459c4a4adaaee4f7474534fff",
+    "README.md": "9e867192eb70e2ad58afcc847f1012c993260d086358ff4a5d91ad78c705ea33",
     "documentation/models/AsyncCreateTorrentRequest.md": "1fa427fe016f5b6a83baa6877930da00833659ab1eae89232853a825235337ed",
     "documentation/models/CreateTorrentRequest.md": "f74ce655b44958cf6444181362664426537a85f06c2ac92ab2970c504dc52f46",
     "documentation/models/CreateUsenetDownloadRequest.md": "1a101472285180e956d0a372737df2185c9ef09058484fbdbd8f96a006f03e14",
@@ -175,13 +175,13 @@
     "documentation/models/MainApiSdkRequestDownloadLinksPostRequest1.md": "cb84419b66a12ed73398b80680d6bc445c0a88501250a7f13549b3581e0cea4d",
     "documentation/models/MainApiSdkRequestDownloadLinksPostRequest2.md": "a95838bce52f0a75db4a9bee2c6a8d512094c10e1712bcebc4604be31f4bf042",
     "documentation/models/MainApiSdkRequestDownloadLinksPostRequest3.md": "23cf1c1578d8cec64f591d978a84a7857ba65273a8ef32a537bdb7ff81d2e632",
-    "documentation/services/MainApiSdkService.md": "698d6fd049c1c30a871c1a8fa1254f68b1e4b09dabbe3f26f822216590b3dd1f",
-    "documentation/snippets/snippets.json": "01f5157e5c8513305b83c337127ff2c9cf8ed54b774bd22c4d94526c97fb4b4f",
+    "documentation/services/MainApiSdkService.md": "25aa041e8a2f66e75c647cbbcb95663ea8f7ca244c84f9357d9eede918ff1416",
+    "documentation/snippets/snippets.json": "baffc49ef90830e93a7b88f8e4b6df80ab18d0508c120896262055bd54efced6",
     "examples/README.md": "cb74211f14838e05ad5f86ede781040561eab312b360a2e3ffb5adfeb971eae8",
-    "examples/package.json": "a86e8d0f30e4defe75a122c9b397c9fb1de62f3bfdbb2275bad41194330d459b",
+    "examples/package.json": "fa005cdeb200c5f9d94e503a44b125c909aa8e527a8ddc4c62b6ac197d06fddb",
     "examples/src/index.ts": "0dd3bb343d4af6607f78d7ab428ca9f499434e40dc69c1aa3df2b50fa6e805b5",
     "examples/tsconfig.json": "bdb522404dc9d1f590917157ea54e49bb6bfa301ef470c190b8b2c7119ed69c4",
-    "package.json": "b42ab5eb3e6a14c87c9e56493ad60f698d1b554eb816c4378d0bfdb6a9b1da7f",
+    "package.json": "04af328f87ea7c8c5f9ed69838aeb85bad6d3136411ae169c12251cf8b947b25",
     "scripts/prepublish.sh": "651cd87546cc25d69210f55dc4310d47007c53b719da1da8b3bd9acb098defcf",
     "src/http/client.ts": "349c2725fbbeac67a4479fe1be2b8c0c3788ac8368ef722e3d1fdcd686f68717",
     "src/http/environment.ts": "338740620e5f66ecadb80ebbe00dfec8f58b193e22ca1e3f937484999b74bd3b",
@@ -202,7 +202,7 @@
     "src/http/serialization/header-serializer.ts": "b4c97918a23ee9c2d19996de23433e5d656f68eb5c44b77e454066d64bdd4293",
     "src/http/serialization/path-serializer.ts": "e6f269f8d87aa3e3119e300899b118a7b03a3fe22c738b19a8ecfca2e750c91d",
     "src/http/serialization/query-serializer.ts": "bc2484850e2a047ca4c5112b6782f44b73019c7e3bd6825500aa5f080383b62a",
-    "src/http/transport/request-builder.ts": "156e3096e0df74477945c2e8caa24a9ccc4c82c44e9f71222974cb99ecea83eb",
+    "src/http/transport/request-builder.ts": "73c431da134733f0f6de8c7e587eff69fb979b914e285050500f312c0f9fd941",
     "src/http/transport/request-fetch-adapter.ts": "4f93b414d86e3f7ad0f5ac15eee1365134a473bc5d50f0f80e7ec30acd8c3edb",
     "src/http/transport/request.ts": "1a18d73c0fea7ea6de777849c6084e7908c9a53c3dde36517f96a86d2a683543",
     "src/http/transport/transport-hook-adapter.ts": "0c706d8da3456825dbdedbe8ffb24350f0dfa4f9aaf4cf13c3bbcf37e5ff54ed",
@@ -215,7 +215,7 @@
     "src/index.ts": "e202b1b2d4d37821453ae28a61ec0b17041ecd270aee1764e4c5534634c94dc3",
     "src/services/base-service.ts": "48f652f352d3bf34feec99d69b4a6f07f1157e1708ec249b98b86e04377f9fb8",
     "src/services/main-api-sdk/index.ts": "27bf289a1945a6dbbec6677c60d3d3645d7f1cb009861d04a7b86878ab90314d",
-    "src/services/main-api-sdk/main-api-sdk-service.ts": "c9b0c9c08cfca68660d68b174317e2ba51b2f9df66ed3459f556656a6c0985d7",
+    "src/services/main-api-sdk/main-api-sdk-service.ts": "77b1f6485e2f7d20bcdb7867ab4ac5523bf8d099d5938bfd480c524ccd31d8e1",
     "src/services/main-api-sdk/models/async-create-torrent-request.ts": "263090b2a9f364c22fbf3aea80447acd1a61080bdcee64b85da14223385423b4",
     "src/services/main-api-sdk/models/create-torrent-request.ts": "3c9a690855af9e2f7b76af9d7aec77983de9ccd63296e2f7d1b505b48c507113",
     "src/services/main-api-sdk/models/create-usenet-download-request.ts": "105db8cc2a40250da437f3ec364f47f9ed50ae4954fbc2f0071823e432fedc70",
@@ -233,7 +233,7 @@
     "src/services/main-api-sdk/models/main-api-sdk-request-download-links-post-request-1.ts": "aab9c151eb91fdf6b2a328729354e47bd3a4f75a9965fa7ab5f9174e6c1e0221",
     "src/services/main-api-sdk/models/main-api-sdk-request-download-links-post-request-2.ts": "3a9ebb99ad94416d90be99314ada5449c0c8f91a8e9061ff91266773587e0ce4",
     "src/services/main-api-sdk/models/main-api-sdk-request-download-links-post-request-3.ts": "20861e867f0cee50619b133e7c0ca2b2babfe458ff7c32c952be332b11ba96d2",
-    "src/services/main-api-sdk/request-params.ts": "d5295a88b94dd0766362b833139aedb26fb9838817e03beaeb5899101d0b3832",
+    "src/services/main-api-sdk/request-params.ts": "6161f6ea5b0eebab8e97fcf6a604a2d183028ac809f47b8f487c6310e2602867",
     "tsconfig.json": "bdb522404dc9d1f590917157ea54e49bb6bfa301ef470c190b8b2c7119ed69c4"
   }
 }
