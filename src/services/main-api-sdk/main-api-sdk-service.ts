@@ -1396,6 +1396,8 @@ Requires an API key using the Authorization Bearer Header.
  * @param {string} [params.id] - Determines the torrent requested, will return an object rather than list. Optional.
  * @param {string} [params.offset] - Determines the offset of items to get from the database. Default is 0. Optional.
  * @param {string} [params.limit] - Determines the number of items to recieve per request. Default is 1000. Optional.
+ * @param {string} [params.active] - Shows only active downloads. Optional
+ * @param {string} [params.files] - Exclude files from response. Optional
  * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
  * @returns {Promise<HttpResponse<any>>} - OK
  */
@@ -1410,6 +1412,8 @@ Requires an API key using the Authorization Bearer Header.
       id: z.string().optional().nullable(),
       offset: z.string().optional().nullable(),
       limit: z.string().optional().nullable(),
+      active: z.string().optional().nullable(),
+      files: z.string().optional().nullable(),
     }).parse(params ?? {});
     const request = new RequestBuilder()
       .setConfig(resolvedConfig)
@@ -1443,6 +1447,14 @@ Requires an API key using the Authorization Bearer Header.
       .addQueryParam({
         key: 'limit',
         value: params?.limit,
+      })
+      .addQueryParam({
+        key: 'active',
+        value: params?.active,
+      })
+      .addQueryParam({
+        key: 'files',
+        value: params?.files,
       })
       .build();
     return this.client.callDirect<any>(request);
@@ -2168,6 +2180,8 @@ Requires an API key using the Authorization Bearer Header.
  * @param {string} [params.id] - Determines the usenet download requested, will return an object rather than list. Optional.
  * @param {string} [params.offset] - Determines the offset of items to get from the database. Default is 0. Optional.
  * @param {string} [params.limit] - Determines the number of items to recieve per request. Default is 1000. Optional.
+ * @param {string} [params.active] - Shows only active downloads. Optional
+ * @param {string} [params.files] - Exclude files from response. Optional
  * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
  * @returns {Promise<HttpResponse<any>>} - OK
  */
@@ -2182,6 +2196,8 @@ Requires an API key using the Authorization Bearer Header.
       id: z.string().optional().nullable(),
       offset: z.string().optional().nullable(),
       limit: z.string().optional().nullable(),
+      active: z.string().optional().nullable(),
+      files: z.string().optional().nullable(),
     }).parse(params ?? {});
     const request = new RequestBuilder()
       .setConfig(resolvedConfig)
@@ -2215,6 +2231,14 @@ Requires an API key using the Authorization Bearer Header.
       .addQueryParam({
         key: 'limit',
         value: params?.limit,
+      })
+      .addQueryParam({
+        key: 'active',
+        value: params?.active,
+      })
+      .addQueryParam({
+        key: 'files',
+        value: params?.files,
       })
       .build();
     return this.client.callDirect<any>(request);
@@ -2835,6 +2859,8 @@ Requires an API key using the Authorization Bearer Header.
  * @param {string} [params.id] - Determines the torrent requested, will return an object rather than list. Optional.
  * @param {string} [params.offset] - Determines the offset of items to get from the database. Default is 0. Optional.
  * @param {string} [params.limit] - Determines the number of items to recieve per request. Default is 1000. Optional.
+ * @param {string} [params.active] - Shows only active downloads. Optional
+ * @param {string} [params.files] - Exclude files from response. Optional
  * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
  * @returns {Promise<HttpResponse<any>>} - OK
  */
@@ -2849,6 +2875,8 @@ Requires an API key using the Authorization Bearer Header.
       id: z.string().optional().nullable(),
       offset: z.string().optional().nullable(),
       limit: z.string().optional().nullable(),
+      active: z.string().optional().nullable(),
+      files: z.string().optional().nullable(),
     }).parse(params ?? {});
     const request = new RequestBuilder()
       .setConfig(resolvedConfig)
@@ -2882,6 +2910,14 @@ Requires an API key using the Authorization Bearer Header.
       .addQueryParam({
         key: 'limit',
         value: params?.limit,
+      })
+      .addQueryParam({
+        key: 'active',
+        value: params?.active,
+      })
+      .addQueryParam({
+        key: 'files',
+        value: params?.files,
       })
       .build();
     return this.client.callDirect<any>(request);

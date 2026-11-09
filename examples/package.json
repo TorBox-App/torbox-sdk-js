@@ -1,6 +1,6 @@
 {
   "name": "main_api_sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "main-api-sdk": "file:../",

@@ -28,6 +28,8 @@ export interface GetTorrentListParams {
   id?: string | null;
   offset?: string | null;
   limit?: string | null;
+  active?: string | null;
+  files?: string | null;
 }
 
 export interface GetTorrentCachedAvailabilityParams {
@@ -77,6 +79,8 @@ export interface GetUsenetListParams {
   id?: string | null;
   offset?: string | null;
   limit?: string | null;
+  active?: string | null;
+  files?: string | null;
 }
 
 export interface GetUsenetCachedAvailabilityParams {
@@ -115,6 +119,8 @@ export interface GetWebDownloadListParams {
   id?: string | null;
   offset?: string | null;
   limit?: string | null;
+  active?: string | null;
+  files?: string | null;
 }
 
 export interface GetWebDownloadCachedAvailabilityParams {
