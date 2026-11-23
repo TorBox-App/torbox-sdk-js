@@ -14,3 +14,6 @@ export type { MainApiSdkRequestDownloadLinksPostRequest3 } from './main-api-sdk-
 export type { GetWebDownloadCachedAvailabilityBatchRequest } from './get-web-download-cached-availability-batch-request';
 export type { EditWebDownloadItemRequest } from './edit-web-download-item-request';
 export type { GetTokenFromDeviceCodeProcessRequest } from './get-token-from-device-code-process-request';
+export type { EditTagRequest } from './edit-tag-request';
+export type { ControlTagRequest } from './control-tag-request';
+export type { ChatWithAssistantRequest } from './chat-with-assistant-request';

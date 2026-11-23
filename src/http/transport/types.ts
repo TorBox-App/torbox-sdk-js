@@ -88,6 +88,11 @@ export interface RequestParameter {
 export interface RequestPagination<Page> {
   /** The number of items per page */
   pageSize?: number;
+  /**
+   * When set, the offset is this property of the request body (a page number advanced by one)
+   * rather than a query parameter.
+   */
+  bodyProperty?: string;
   /** JSON path to extract page data from response */
   pagePath: string[];
   /** Schema for validating page data */
@@ -109,6 +114,8 @@ export interface RequestCursorPagination<Page> {
   cursorPath: string[];
   /** Schema for validating cursor value */
   cursorSchema?: ZodType<any, any, any>;
+  /** When set, the cursor is this property of the request body rather than a query parameter. */
+  bodyProperty?: string;
 }
 
 /**

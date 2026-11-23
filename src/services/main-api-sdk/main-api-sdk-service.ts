@@ -14,6 +14,7 @@ import {
   AddReferralToAccountParams,
   CreateStreamParams,
   ExportTorrentDataParams,
+  GetAssistantConversationParams,
   GetChangelogsJsonParams,
   GetChangelogsRssFeedParams,
   GetQueuedDownloadsParams,
@@ -91,6 +92,12 @@ import {
   GetTokenFromDeviceCodeProcessRequest,
   getTokenFromDeviceCodeProcessRequestRequest,
 } from './models/get-token-from-device-code-process-request';
+import { EditTagRequest, editTagRequestRequest } from './models/edit-tag-request';
+import { ControlTagRequest, controlTagRequestRequest } from './models/control-tag-request';
+import {
+  ChatWithAssistantRequest,
+  chatWithAssistantRequestRequest,
+} from './models/chat-with-assistant-request';
 
 /**
  * Service class for MainApiSdkService operations.
@@ -277,6 +284,32 @@ export class MainApiSdkService extends BaseService {
   protected createStreamConfig: Partial<SdkConfig> = { environment: Environment.API_BASE };
 
   protected getStreamDataConfig: Partial<SdkConfig> = { environment: Environment.API_BASE };
+
+  protected getUserTagsConfig: Partial<SdkConfig> = { environment: Environment.API_BASE };
+
+  protected editTagConfig: Partial<SdkConfig> = { environment: Environment.API_BASE };
+
+  protected controlTagConfig: Partial<SdkConfig> = { environment: Environment.API_BASE };
+
+  protected chatWithAssistantConfig: Partial<SdkConfig> = { environment: Environment.API_BASE };
+
+  protected getAssistantUsageConfig: Partial<SdkConfig> = { environment: Environment.API_BASE };
+
+  protected getAssistantConversationsConfig: Partial<SdkConfig> = {
+    environment: Environment.API_BASE,
+  };
+
+  protected getAssistantConversationConfig: Partial<SdkConfig> = {
+    environment: Environment.API_BASE,
+  };
+
+  protected deleteAssistantConversationConfig: Partial<SdkConfig> = {
+    environment: Environment.API_BASE,
+  };
+
+  protected deleteAllAssistantConversationsConfig: Partial<SdkConfig> = {
+    environment: Environment.API_BASE,
+  };
 
   /**
    * Sets method-level configuration for createTorrent.
@@ -989,6 +1022,96 @@ export class MainApiSdkService extends BaseService {
   }
 
   /**
+   * Sets method-level configuration for getUserTags.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setGetUserTagsConfig(config: Partial<SdkConfig>): this {
+    this.getUserTagsConfig = config;
+    return this;
+  }
+
+  /**
+   * Sets method-level configuration for editTag.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setEditTagConfig(config: Partial<SdkConfig>): this {
+    this.editTagConfig = config;
+    return this;
+  }
+
+  /**
+   * Sets method-level configuration for controlTag.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setControlTagConfig(config: Partial<SdkConfig>): this {
+    this.controlTagConfig = config;
+    return this;
+  }
+
+  /**
+   * Sets method-level configuration for chatWithAssistant.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setChatWithAssistantConfig(config: Partial<SdkConfig>): this {
+    this.chatWithAssistantConfig = config;
+    return this;
+  }
+
+  /**
+   * Sets method-level configuration for getAssistantUsage.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setGetAssistantUsageConfig(config: Partial<SdkConfig>): this {
+    this.getAssistantUsageConfig = config;
+    return this;
+  }
+
+  /**
+   * Sets method-level configuration for getAssistantConversations.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setGetAssistantConversationsConfig(config: Partial<SdkConfig>): this {
+    this.getAssistantConversationsConfig = config;
+    return this;
+  }
+
+  /**
+   * Sets method-level configuration for getAssistantConversation.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setGetAssistantConversationConfig(config: Partial<SdkConfig>): this {
+    this.getAssistantConversationConfig = config;
+    return this;
+  }
+
+  /**
+   * Sets method-level configuration for deleteAssistantConversation.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setDeleteAssistantConversationConfig(config: Partial<SdkConfig>): this {
+    this.deleteAssistantConversationConfig = config;
+    return this;
+  }
+
+  /**
+   * Sets method-level configuration for deleteAllAssistantConversations.
+   * @param config - Partial configuration to override service-level defaults
+   * @returns This service instance for method chaining
+   */
+  setDeleteAllAssistantConversationsConfig(config: Partial<SdkConfig>): this {
+    this.deleteAllAssistantConversationsConfig = config;
+    return this;
+  }
+
+  /**
  * ### Overview
 Creates a torrent under your account. Simply send **either** a magnet link, or a torrent file. Once they have been checked, they will begin downloading assuming your account has available active download slots, and they aren't too large.
 
@@ -1396,6 +1519,8 @@ Requires an API key using the Authorization Bearer Header.
  * @param {string} [params.id] - Determines the torrent requested, will return an object rather than list. Optional.
  * @param {string} [params.offset] - Determines the offset of items to get from the database. Default is 0. Optional.
  * @param {string} [params.limit] - Determines the number of items to recieve per request. Default is 1000. Optional.
+ * @param {string} [params.active] - Shows only active downloads. Optional
+ * @param {string} [params.files] - Exclude files from response. Optional
  * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
  * @returns {Promise<HttpResponse<any>>} - OK
  */
@@ -1410,6 +1535,8 @@ Requires an API key using the Authorization Bearer Header.
       id: z.string().optional().nullable(),
       offset: z.string().optional().nullable(),
       limit: z.string().optional().nullable(),
+      active: z.string().optional().nullable(),
+      files: z.string().optional().nullable(),
     }).parse(params ?? {});
     const request = new RequestBuilder()
       .setConfig(resolvedConfig)
@@ -1443,6 +1570,14 @@ Requires an API key using the Authorization Bearer Header.
       .addQueryParam({
         key: 'limit',
         value: params?.limit,
+      })
+      .addQueryParam({
+        key: 'active',
+        value: params?.active,
+      })
+      .addQueryParam({
+        key: 'files',
+        value: params?.files,
       })
       .build();
     return this.client.callDirect<any>(request);
@@ -2168,6 +2303,8 @@ Requires an API key using the Authorization Bearer Header.
  * @param {string} [params.id] - Determines the usenet download requested, will return an object rather than list. Optional.
  * @param {string} [params.offset] - Determines the offset of items to get from the database. Default is 0. Optional.
  * @param {string} [params.limit] - Determines the number of items to recieve per request. Default is 1000. Optional.
+ * @param {string} [params.active] - Shows only active downloads. Optional
+ * @param {string} [params.files] - Exclude files from response. Optional
  * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
  * @returns {Promise<HttpResponse<any>>} - OK
  */
@@ -2182,6 +2319,8 @@ Requires an API key using the Authorization Bearer Header.
       id: z.string().optional().nullable(),
       offset: z.string().optional().nullable(),
       limit: z.string().optional().nullable(),
+      active: z.string().optional().nullable(),
+      files: z.string().optional().nullable(),
     }).parse(params ?? {});
     const request = new RequestBuilder()
       .setConfig(resolvedConfig)
@@ -2215,6 +2354,14 @@ Requires an API key using the Authorization Bearer Header.
       .addQueryParam({
         key: 'limit',
         value: params?.limit,
+      })
+      .addQueryParam({
+        key: 'active',
+        value: params?.active,
+      })
+      .addQueryParam({
+        key: 'files',
+        value: params?.files,
       })
       .build();
     return this.client.callDirect<any>(request);
@@ -2835,6 +2982,8 @@ Requires an API key using the Authorization Bearer Header.
  * @param {string} [params.id] - Determines the torrent requested, will return an object rather than list. Optional.
  * @param {string} [params.offset] - Determines the offset of items to get from the database. Default is 0. Optional.
  * @param {string} [params.limit] - Determines the number of items to recieve per request. Default is 1000. Optional.
+ * @param {string} [params.active] - Shows only active downloads. Optional
+ * @param {string} [params.files] - Exclude files from response. Optional
  * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
  * @returns {Promise<HttpResponse<any>>} - OK
  */
@@ -2849,6 +2998,8 @@ Requires an API key using the Authorization Bearer Header.
       id: z.string().optional().nullable(),
       offset: z.string().optional().nullable(),
       limit: z.string().optional().nullable(),
+      active: z.string().optional().nullable(),
+      files: z.string().optional().nullable(),
     }).parse(params ?? {});
     const request = new RequestBuilder()
       .setConfig(resolvedConfig)
@@ -2882,6 +3033,14 @@ Requires an API key using the Authorization Bearer Header.
       .addQueryParam({
         key: 'limit',
         value: params?.limit,
+      })
+      .addQueryParam({
+        key: 'active',
+        value: params?.active,
+      })
+      .addQueryParam({
+        key: 'files',
+        value: params?.files,
       })
       .build();
     return this.client.callDirect<any>(request);
@@ -4862,6 +5021,379 @@ Requires an API key using the Authorization Bearer Header.
       .addQueryParam({
         key: 'chosen_resolution_index',
         value: params?.chosenResolutionIndex,
+      })
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Gets the tags attached to a user account, with the downloads using each tag, their count and total size.
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async getUserTags(apiVersion: string, requestConfig?: Partial<SdkConfig>): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(this.getUserTagsConfig, requestConfig);
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('GET')
+      .setPath('/{api_version}/api/tags/mytags')
+      .setRequestSchema(z.any())
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
+      })
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Renames a tag. This new name is case sensitive. The ID is the tag's ID from the `/mytags`. Fails with `DUPLICATE_ITEM` when another of the user's tags already has the same name, in any casing.
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async editTag(
+    apiVersion: string,
+    body: EditTagRequest,
+    requestConfig?: Partial<SdkConfig>,
+  ): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(this.editTagConfig, requestConfig);
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('PUT')
+      .setPath('/{api_version}/api/tags/edittag')
+      .setRequestSchema(editTagRequestRequest)
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
+      })
+      .addHeaderParam({ key: 'Content-Type', value: 'application/json' })
+      .addBody(body)
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Controls a tag. Currently, the only operation is "delete", which deletes the tag and removes it from every download using it; the downloads stay in your account and are otherwise unmodified. The ID is the tag's ID from `/mytags` endpoint.
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async controlTag(
+    apiVersion: string,
+    body: ControlTagRequest,
+    requestConfig?: Partial<SdkConfig>,
+  ): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(this.controlTagConfig, requestConfig);
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('POST')
+      .setPath('/{api_version}/api/tags/controltag')
+      .setRequestSchema(controlTagRequestRequest)
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
+      })
+      .addHeaderParam({ key: 'Content-Type', value: 'application/json' })
+      .addBody(body)
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Send a message to the AI Assistant. Optionally include a `session_id` to resume a previous conversation. If no `session_id` is given, the AI will have no previous context and will create a new conversation.
+
+Also included is a way to upload `files` in base64 allowing you to attach a file that the AI Assistant can use.
+
+We also allow you to send `blocks` which is a list of strings that state what additional features your chat interface includes. If no `blocks` are sent, responses are sent in plain text and markdown (for things like tables or bolding text).
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async chatWithAssistant(
+    apiVersion: string,
+    body: ChatWithAssistantRequest,
+    requestConfig?: Partial<SdkConfig>,
+  ): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(this.chatWithAssistantConfig, requestConfig);
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('POST')
+      .setPath('/{api_version}/api/assistant/chat')
+      .setRequestSchema(chatWithAssistantRequestRequest)
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
+      })
+      .addHeaderParam({ key: 'Content-Type', value: 'application/json' })
+      .addBody(body)
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Gets the current user's AI assistant usage. Users are limited to a certain number of tokens daily, and this endpoint tells you exactly how much is left as a percentage. This makes it easy for developers so they don't have to spend time counting tokens, which is usually inaccurate.
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async getAssistantUsage(apiVersion: string, requestConfig?: Partial<SdkConfig>): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(this.getAssistantUsageConfig, requestConfig);
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('GET')
+      .setPath('/{api_version}/api/assistant/usage')
+      .setRequestSchema(z.any())
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
+      })
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Gets the user's open conversations. Conversations are sorted newest first. Each conversation is kept for 30 days after its last message.
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async getAssistantConversations(
+    apiVersion: string,
+    requestConfig?: Partial<SdkConfig>,
+  ): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(
+      this.getAssistantConversationsConfig,
+      requestConfig,
+    );
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('GET')
+      .setPath('/{api_version}/api/assistant/conversations')
+      .setRequestSchema(z.any())
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
+      })
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Get a specific user conversation with the AI assistant.
+
+You can pass the `since` parameter with a Unix timestamp, and will show any revisions since that time, this way, you don't waste bandwidth retrieving and updating the entire conversation. If no update has been made since, the data return will be null.
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {string} sessionId - 
+ * @param {string} [params.since] - Unix timestamp of the conversation you want to get since this time.
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async getAssistantConversation(
+    apiVersion: string,
+    sessionId: string,
+    params?: GetAssistantConversationParams,
+    requestConfig?: Partial<SdkConfig>,
+  ): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(
+      this.getAssistantConversationConfig,
+      requestConfig,
+    );
+    z.object({ since: z.string().optional().nullable() }).parse(params ?? {});
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('GET')
+      .setPath('/{api_version}/api/assistant/conversations/{session_id}')
+      .setRequestSchema(z.any())
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
+      })
+      .addPathParam({
+        key: 'session_id',
+        value: sessionId,
+      })
+      .addQueryParam({
+        key: 'since',
+        value: params?.since,
+      })
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Deletes a specific conversation with the AI assistant. Usage persists from the conversation.
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {string} sessionId - 
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async deleteAssistantConversation(
+    apiVersion: string,
+    sessionId: string,
+    requestConfig?: Partial<SdkConfig>,
+  ): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(
+      this.deleteAssistantConversationConfig,
+      requestConfig,
+    );
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('DELETE')
+      .setPath('/{api_version}/api/assistant/conversations/{session_id}')
+      .setRequestSchema(z.any())
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
+      })
+      .addPathParam({
+        key: 'session_id',
+        value: sessionId,
+      })
+      .build();
+    return this.client.callDirect<any>(request);
+  }
+
+  /**
+ * ### Overview
+Deletes all conversations for a user's account. Usage persists from the conversations.
+
+### Authorization
+
+Requires an API key using the Authorization Bearer Header.
+ * @param {string} apiVersion - 
+ * @param {Partial<SdkConfig>} [requestConfig] - The request configuration for retry and validation.
+ * @returns {Promise<HttpResponse<any>>} - OK
+ */
+  async deleteAllAssistantConversations(
+    apiVersion: string,
+    requestConfig?: Partial<SdkConfig>,
+  ): Promise<any> {
+    const resolvedConfig = this.getResolvedConfig(
+      this.deleteAllAssistantConversationsConfig,
+      requestConfig,
+    );
+    const request = new RequestBuilder()
+      .setConfig(resolvedConfig)
+      .setBaseUrl(resolvedConfig)
+      .setMethod('DELETE')
+      .setPath('/{api_version}/api/assistant/conversations')
+      .setRequestSchema(z.any())
+      .addAccessTokenAuth(resolvedConfig?.token)
+      .setRequestContentType(ContentType.Json)
+      .addResponse({
+        schema: z.any(),
+        contentType: ContentType.Json,
+        status: 200,
+      })
+      .addPathParam({
+        key: 'api_version',
+        value: apiVersion,
       })
       .build();
     return this.client.callDirect<any>(request);
