@@ -1,15 +1,11 @@
 {
   "name": "@torbox/torbox-api",
-  "version": "9.3.1-20261125.4",
+  "version": "9.3.2026112508",
   "description": "TypeScript SDK for the TorBox API",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": "TorBox <contact@torbox.app>",
   "homepage": "https://api-docs.torbox.app/docs/sdks",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TorBox-App/torbox-docs.git",
-    "directory": "sdks/typescript"
-  },
+  "repository": { "type": "git", "url": "git+https://github.com/TorBox-App/torbox-sdk-js.git" },
   "keywords": ["torbox", "debrid", "torrent", "usenet", "sdk"],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -25,7 +21,7 @@
     "test": "node --test test/*.test.mjs",
     "prepublishOnly": "npm run build"
   },
-  "publishConfig": { "access": "public", "tag": "next", "provenance": false },
+  "publishConfig": { "access": "public", "tag": "latest", "provenance": false },
   "devDependencies": {
     "@types/node": "22.20.5",
     "typescript": "5.9.3"

@@ -125,7 +125,7 @@ export class TorBox {
       basePath: (options.baseUrl ?? DEFAULT_BASE_URL).replace(/\/$/, ''),
       accessToken: options.apiKey,
       fetchApi,
-      headers: { 'x-torbox-sdk': 'typescript/9.3.1-20261125.4' },
+      headers: { 'x-torbox-sdk': 'typescript/9.3.2026112508' },
     });
     const c = this.configuration;
     const k = options.apiKey;

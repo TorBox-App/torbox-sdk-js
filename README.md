@@ -5,7 +5,7 @@ TypeScript/JavaScript client for the [TorBox API](https://api-docs.torbox.app). 
 [OpenAPI spec](https://api.torbox.app/openapi.json) and published automatically when the API changes.
 
 ```bash
-npm install @torbox/torbox-api@9.3.1-20261125.4
+npm install @torbox/torbox-api@9.3.2026112508
 ```
 
 Node 20+, Deno, Bun and browsers (uses `fetch`). ESM and CommonJS.
